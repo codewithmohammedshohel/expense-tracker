@@ -1,0 +1,182 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all for all documents
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Primitive and Global Security Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Entity Validation Helpers
+    function isValidUser(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.email is string && data.email.size() <= 256 &&
+             data.preferredCurrency is string && data.preferredCurrency.size() <= 8 &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 128)) &&
+             (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64)) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidTransaction(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.type is string && (data.type == 'income' || data.type == 'expense') &&
+             data.amount is number && data.amount >= 0 &&
+             data.currency is string && data.currency.size() <= 8 &&
+             data.category is string && data.category.size() <= 64 &&
+             data.date is string && data.date.size() <= 32 &&
+             (!('originalAmount' in data) || data.originalAmount is number) &&
+             (!('originalCurrency' in data) || (data.originalCurrency is string && data.originalCurrency.size() <= 8)) &&
+             (!('exchangeRate' in data) || data.exchangeRate is number) &&
+             (!('description' in data) || (data.description is string && data.description.size() <= 256)) &&
+             (!('taxDeductible' in data) || data.taxDeductible is bool) &&
+             (!('taxCategory' in data) || (data.taxCategory is string && data.taxCategory.size() <= 64)) &&
+             (!('tags' in data) || (data.tags is string && data.tags.size() <= 256)) &&
+             (!('source' in data) || (data.source is string && data.source.size() <= 64)) &&
+             (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64)) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidBudget(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.category is string && data.category.size() <= 64 &&
+             data.monthlyLimit is number && data.monthlyLimit >= 0 &&
+             data.currency is string && data.currency.size() <= 8 &&
+             (!('alertThreshold' in data) || (data.alertThreshold is number && data.alertThreshold >= 0 && data.alertThreshold <= 100)) &&
+             (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64)) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidSubscription(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.name is string && data.name.size() <= 128 &&
+             data.amount is number && data.amount >= 0 &&
+             data.currency is string && data.currency.size() <= 8 &&
+             data.billingCycle is string && data.billingCycle.size() <= 32 &&
+             data.nextBillingDate is string && data.nextBillingDate.size() <= 32 &&
+             (!('category' in data) || (data.category is string && data.category.size() <= 64)) &&
+             (!('status' in data) || (data.status is string && data.status.size() <= 32)) &&
+             (!('autoRenew' in data) || data.autoRenew is bool) &&
+             (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64)) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidBankConnection(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.institutionName is string && data.institutionName.size() <= 128 &&
+             data.accountMask is string && data.accountMask.size() <= 16 &&
+             data.syncStatus is string && data.syncStatus.size() <= 32 &&
+             (!('institutionId' in data) || (data.institutionId is string && data.institutionId.size() <= 64)) &&
+             (!('accountType' in data) || (data.accountType is string && data.accountType.size() <= 32)) &&
+             (!('lastSyncedAt' in data) || (data.lastSyncedAt is string && data.lastSyncedAt.size() <= 64)) &&
+             (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64)) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidSyncDevice(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.deviceId is string && data.deviceId.size() <= 128 &&
+             data.deviceType is string && data.deviceType.size() <= 64 &&
+             data.deviceName is string && data.deviceName.size() <= 128 &&
+             (!('lastActiveAt' in data) || (data.lastActiveAt is string && data.lastActiveAt.size() <= 64)) &&
+             (!('syncVersion' in data) || data.syncVersion is number) &&
+             (!('status' in data) || (data.status is string && data.status.size() <= 32)) &&
+             (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64)) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidCloudBackup(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.backupName is string && data.backupName.size() <= 128 &&
+             data.encryptedPayload is string && data.encryptedPayload.size() <= 50000 &&
+             data.checksum is string && data.checksum.size() <= 128 &&
+             (!('recordCount' in data) || data.recordCount is number) &&
+             (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64)) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    // Collection Security Rules
+
+    // 1. Users
+    match /users/{userId} {
+      allow get: if isValidId(userId) && isOwner(userId);
+      allow create: if isValidId(userId) && isOwner(userId) && isValidUser(incoming()) && incoming().userId == userId;
+      allow update: if isValidId(userId) && isOwner(userId) && isValidUser(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isValidId(userId) && isOwner(userId);
+    }
+
+    // 2. Transactions
+    match /transactions/{transactionId} {
+      allow get: if isValidId(transactionId) && isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(transactionId) && isValidTransaction(incoming());
+      allow update: if isValidId(transactionId) && isOwner(existing().userId) && isValidTransaction(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isValidId(transactionId) && isOwner(existing().userId);
+    }
+
+    // 3. Budgets
+    match /budgets/{budgetId} {
+      allow get: if isValidId(budgetId) && isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(budgetId) && isValidBudget(incoming());
+      allow update: if isValidId(budgetId) && isOwner(existing().userId) && isValidBudget(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isValidId(budgetId) && isOwner(existing().userId);
+    }
+
+    // 4. Subscriptions
+    match /subscriptions/{subscriptionId} {
+      allow get: if isValidId(subscriptionId) && isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(subscriptionId) && isValidSubscription(incoming());
+      allow update: if isValidId(subscriptionId) && isOwner(existing().userId) && isValidSubscription(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isValidId(subscriptionId) && isOwner(existing().userId);
+    }
+
+    // 5. Bank Connections
+    match /bankConnections/{connectionId} {
+      allow get: if isValidId(connectionId) && isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(connectionId) && isValidBankConnection(incoming());
+      allow update: if isValidId(connectionId) && isOwner(existing().userId) && isValidBankConnection(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isValidId(connectionId) && isOwner(existing().userId);
+    }
+
+    // 6. Sync Devices
+    match /syncDevices/{deviceId} {
+      allow get: if isValidId(deviceId) && isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(deviceId) && isValidSyncDevice(incoming());
+      allow update: if isValidId(deviceId) && isOwner(existing().userId) && isValidSyncDevice(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isValidId(deviceId) && isOwner(existing().userId);
+    }
+
+    // 7. Cloud Backups
+    match /cloudBackups/{backupId} {
+      allow get: if isValidId(backupId) && isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(backupId) && isValidCloudBackup(incoming());
+      allow update: if isValidId(backupId) && isOwner(existing().userId) && isValidCloudBackup(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isValidId(backupId) && isOwner(existing().userId);
+    }
+  }
+}

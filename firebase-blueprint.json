@@ -1,0 +1,155 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with currency and sync settings",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "preferredCurrency": { "type": "string", "maxLength": 8 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["userId", "email", "preferredCurrency"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Daily income or expense record with multi-currency and tax data",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "maxLength": 16 },
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 8 },
+        "originalAmount": { "type": "number" },
+        "originalCurrency": { "type": "string", "maxLength": 8 },
+        "exchangeRate": { "type": "number" },
+        "category": { "type": "string", "maxLength": 64 },
+        "description": { "type": "string", "maxLength": 256 },
+        "date": { "type": "string", "maxLength": 32 },
+        "taxDeductible": { "type": "boolean" },
+        "taxCategory": { "type": "string", "maxLength": 64 },
+        "tags": { "type": "string", "maxLength": 256 },
+        "source": { "type": "string", "maxLength": 64 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["userId", "type", "amount", "currency", "category", "date"]
+    },
+    "Budget": {
+      "title": "Budget",
+      "description": "Monthly category budget limit and alert threshold",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "category": { "type": "string", "maxLength": 64 },
+        "monthlyLimit": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 8 },
+        "alertThreshold": { "type": "number" },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["userId", "category", "monthlyLimit", "currency"]
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "Recurring subscription and billing cycle reminder",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 128 },
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 8 },
+        "billingCycle": { "type": "string", "maxLength": 32 },
+        "nextBillingDate": { "type": "string", "maxLength": 32 },
+        "category": { "type": "string", "maxLength": 64 },
+        "status": { "type": "string", "maxLength": 32 },
+        "autoRenew": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["userId", "name", "amount", "currency", "billingCycle", "nextBillingDate"]
+    },
+    "BankConnection": {
+      "title": "BankConnection",
+      "description": "Connected banking institution integration",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "institutionName": { "type": "string", "maxLength": 128 },
+        "institutionId": { "type": "string", "maxLength": 64 },
+        "accountMask": { "type": "string", "maxLength": 16 },
+        "accountType": { "type": "string", "maxLength": 32 },
+        "syncStatus": { "type": "string", "maxLength": 32 },
+        "lastSyncedAt": { "type": "string", "maxLength": 64 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["userId", "institutionName", "accountMask", "syncStatus"]
+    },
+    "SyncDevice": {
+      "title": "SyncDevice",
+      "description": "Cross-platform device or web dashboard sync registration",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "deviceId": { "type": "string", "maxLength": 128 },
+        "deviceType": { "type": "string", "maxLength": 64 },
+        "deviceName": { "type": "string", "maxLength": 128 },
+        "lastActiveAt": { "type": "string", "maxLength": 64 },
+        "syncVersion": { "type": "number" },
+        "status": { "type": "string", "maxLength": 32 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["userId", "deviceId", "deviceType", "deviceName"]
+    },
+    "CloudBackup": {
+      "title": "CloudBackup",
+      "description": "Encrypted cloud backup snapshot record",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "backupName": { "type": "string", "maxLength": 128 },
+        "encryptedPayload": { "type": "string", "maxLength": 50000 },
+        "checksum": { "type": "string", "maxLength": 128 },
+        "recordCount": { "type": "number" },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["userId", "backupName", "encryptedPayload", "checksum"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and currency preferences"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Daily income and expense transactions"
+    },
+    "/budgets/{budgetId}": {
+      "schema": "Budget",
+      "description": "Category monthly budget limits"
+    },
+    "/subscriptions/{subscriptionId}": {
+      "schema": "Subscription",
+      "description": "Recurring bills and subscriptions"
+    },
+    "/bankConnections/{connectionId}": {
+      "schema": "BankConnection",
+      "description": "Connected bank accounts for automated syncing"
+    },
+    "/syncDevices/{deviceId}": {
+      "schema": "SyncDevice",
+      "description": "Active synced cross-platform devices and endpoints"
+    },
+    "/cloudBackups/{backupId}": {
+      "schema": "CloudBackup",
+      "description": "AES-256 encrypted snapshots for backup and recovery"
+    }
+  }
+}
