@@ -11,8 +11,10 @@ import {
   LogIn,
   CheckCircle2,
   ChevronDown,
+  Zap,
 } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext.tsx';
+import { usePWAInstall } from '../hooks/usePWAInstall.ts';
 import { SUPPORTED_CURRENCIES } from '../data/initialData.ts';
 
 interface NavbarProps {
@@ -45,12 +47,15 @@ export const Navbar: React.FC<NavbarProps> = ({
     triggerTwoWaySync,
   } = useFinance();
 
+  const { isInstallable, isInstalled, install } = usePWAInstall();
+
   const [showNotifications, setShowNotifications] = useState(false);
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard' },
+    { id: 'android', label: 'Android App' },
     { id: 'transactions', label: 'Transactions' },
     { id: 'budgets', label: 'Budgets' },
     { id: 'subscriptions', label: 'Subscriptions' },
@@ -155,14 +160,30 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </div>
 
+            {/* Android App Button */}
+            <button
+              onClick={() => {
+                if (isInstallable) {
+                  install();
+                } else {
+                  setActiveTab('android');
+                }
+              }}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30 text-xs font-semibold transition-all shadow-sm shadow-emerald-950"
+              title={isInstallable ? 'Install Android App on device' : 'Open Android App & Widget Suite'}
+            >
+              <Smartphone className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{isInstallable ? 'Install Android' : 'Android App'}</span>
+            </button>
+
             {/* Quick-Log Mobile Widget Button */}
             <button
               onClick={onOpenQuickLog}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 text-xs font-medium transition-all shadow-sm shadow-emerald-950"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-zinc-100 hover:border-zinc-700 text-xs font-medium transition-all"
               title="Home Screen Quick-Log Widget Simulator"
             >
-              <Smartphone className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Quick Widget</span>
+              <Zap className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">Widget</span>
             </button>
 
             {/* Gemini AI Advisor Button */}

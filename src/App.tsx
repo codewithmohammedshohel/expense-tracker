@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FinanceProvider } from './context/FinanceContext.tsx';
 import { Navbar } from './components/Navbar.tsx';
 import { DashboardOverview } from './components/DashboardOverview.tsx';
+import { AndroidAppHub } from './components/AndroidAppHub.tsx';
 import { TransactionsManager } from './components/TransactionsManager.tsx';
 import { BudgetsManager } from './components/BudgetsManager.tsx';
 import { SubscriptionsManager } from './components/SubscriptionsManager.tsx';
@@ -40,6 +41,8 @@ function MainLayout() {
             setActiveTab={setActiveTab}
           />
         )}
+
+        {activeTab === 'android' && <AndroidAppHub />}
 
         {activeTab === 'transactions' && <TransactionsManager />}
 

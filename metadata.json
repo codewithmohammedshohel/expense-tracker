@@ -2,5 +2,7 @@
   "name": "ApexLedger - Cross-Platform Financial Intelligence & Budget Suite",
   "description": "Production-grade cross-platform budget and expense tracker with multi-currency exchange, automated bank sync, Gemini AI financial insights, freelancer tax categorization, and real-time cloud sync.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

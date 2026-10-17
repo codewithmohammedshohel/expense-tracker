@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#052e16"/>
+      <stop offset="50%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#10b981" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Background Base with Rounded Squircle Shape -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="#10b981" stroke-width="6" stroke-opacity="0.4"/>
+
+  <!-- Financial Wallet & Ledger Emblem -->
+  <g transform="translate(106, 116)" filter="url(#shadow)">
+    <!-- Main Folder / Card Surface -->
+    <rect x="0" y="40" width="300" height="200" rx="28" fill="url(#glowGrad)"/>
+    <rect x="4" y="44" width="292" height="192" rx="24" fill="#09090b" fill-opacity="0.25"/>
+
+    <!-- Top Tab / Flap -->
+    <path d="M 30 40 L 100 40 L 130 10 L 270 10 C 285 10 295 20 295 35 L 295 40 Z" fill="url(#glowGrad)" fill-opacity="0.8"/>
+
+    <!-- Central Diamond Apex Emblem -->
+    <polygon points="150,85 195,130 150,175 105,130" fill="url(#glowGrad)"/>
+    <polygon points="150,105 175,130 150,155 125,130" fill="#022c22"/>
+
+    <!-- Dynamic Flow Lines -->
+    <line x1="45" y1="200" x2="110" y2="200" stroke="#a7f3d0" stroke-width="8" stroke-linecap="round"/>
+    <line x1="190" y1="200" x2="255" y2="200" stroke="#34d399" stroke-width="8" stroke-linecap="round"/>
+  </g>
+</svg>
