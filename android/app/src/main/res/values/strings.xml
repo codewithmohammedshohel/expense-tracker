@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ApexLedger</string>
+    <string name="quick_log_widget_title">Apex Quick-Log</string>
+    <string name="btn_coffee">Coffee</string>
+    <string name="btn_lunch">Lunch</string>
+    <string name="btn_rideshare">Rideshare</string>
+    <string name="btn_fuel">Fuel</string>
+    <string name="dashboard_title">ApexLedger Dashboard</string>
+    <string name="net_balance_label">Net Available Balance</string>
+    <string name="monthly_income_label">Income</string>
+    <string name="monthly_expenses_label">Expenses</string>
+    <string name="recent_transactions_title">Recent Transactions</string>
+    <string name="budget_overview_title">Monthly Budgets</string>
+    <string name="tax_deductions_title">Tax Deductions</string>
+    <string name="gemini_advisor_title">Gemini AI Financial Health</string>
+</resources>

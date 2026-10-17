@@ -15,17 +15,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ApexLedger">
 
-        <!-- Main Trusted Web Activity / Native Compose Activity -->
+        <!-- Native Jetpack Compose Main Activity -->
+        <activity
+            android:name=".ComposeMainActivity"
+            android:exported="true"
+            android:label="ApexLedger Compose"
+            android:theme="@style/Theme.ApexLedger">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Trusted Web Activity / Hybrid Web Container Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.ApexLedger.NoActionBar"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
             <!-- Deep linking & Android App Links -->
             <intent-filter android:autoVerify="true">
